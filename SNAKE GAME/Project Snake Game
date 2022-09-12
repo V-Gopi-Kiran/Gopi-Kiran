@@ -1,0 +1,51 @@
+# program to create the famous "SNAKE GAME"
+
+from turtle import Turtle, Screen
+from SNAKE_GAME_Snake_class import Snake
+from SNAKE_GAME_Food_class import Food
+from SNAKE_GAME_Scoreboard_class import Scoreboard
+import time
+
+
+screen = Screen()
+screen.setup(height = 750, width = 800)
+screen.bgcolor('black')
+screen.title('SNAKE GAME')
+screen.tracer(0)  # turning off the animations
+
+snake = Snake() # creating snake object fron Snake_class_for_SNAKE_GAME
+food = Food()  #creating food object from Food_class_for_SNAKE_GAME
+scoreboard = Scoreboard()  # creating score object from Scoreboard_class_for_SNAKE_GAME
+
+screen.listen()
+screen.onkey(snake.up, 'Up')
+screen.onkey(snake.down, 'Down')
+screen.onkey(snake.right, 'Right')
+screen.onkey(snake.left, 'Left')
+
+is_game_on = True
+
+while is_game_on:
+    screen.update()  # updating the screen after turning the animations
+    time.sleep(0.1)
+    snake.move()  # calling move function from snake_class
+
+    #detecting collision with food
+    if snake.head.distance (food) < 15:
+        #print("I ate the blue circle")
+        food.refresh_food()
+        snake.extend()
+        scoreboard.increase_score()
+
+    #detecting collision with wall
+    if snake.head.xcor() > 395 or snake.head.xcor() < -400 or snake.head.ycor() > 355 or snake.head.ycor() < -375 :
+        is_game_on = False
+        scoreboard.gameover()
+
+    #detecting collision with tail
+    for segment in snake.segments:
+        if segment == snake.head:
+            pass
+        elif snake.head.distance(segment) < 10:
+            is_game_on = True
+            scoreboard.gameover()
